@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html ng-app="FablePlayer">
+<head>
+	<title>Fable-Player</title>
+	<script type="text/javascript" src="lib/angular.js"></script>
+	<script type="text/javascript" src="lib/angular-simple-sprite.js"></script>
+	<script type="text/javascript" src="../FableJS/main.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+	<link rel="stylesheet" type="text/css" href="css/animate.css">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head>
+<body>
+	<fable width="1000" height="600" >
+			<page id="1" bg-image="graphics/BGwar.png" transition="animated fadeIn" >
+				<div class="title" id="title" left="200" top="50" transition="animated bounce">O GRANDE GURREIRO</div>
+				<!--A historia do guerreiro-->
+				<img  src="graphics/char.png" width="500" height="300" left="600" top="220"></img>
+				
+
+				<agent id="inicio">
+					<state id="text1">
+						<div left="200" top="100" width="400" font-size="30" font-color="#AA6BFFFF">
+			            	<p transition="animated fadeIn">Era uma vez um guerreiro que vivia participando de guerras, mas um dia, quase terminando uma batalha...</p>
+			        	</div>
+						<on-touch>
+							<change-state target="text2"/>
+						</on-touch>
+					
+					</state>
+					<state id="text2">
+						<div left="200" top="100" width="400" font-size="30" font-color="black">
+			            	<p transition="animated fadeIn" >Ele soube, por uma carta que seu filho havia sido raptado por seu arqui-inimigo Baldur e que o mesmo tinha levado a criança para a Caverna da Dor, que coincidentemente era depois da montanha onde o guerreio estava lutando.</p>
+			        	</div>
+						<on-touch>
+							<change-state target="text3"/>
+						</on-touch>
+					</state>
+					<state id="text3">
+						<div left="200" top="100" width="400" font-size="30" font-color="#AA6BFFFF">
+			           		<p transition="animated fadeIn">Após ler a carta, como era sabio e experiente, bolou um plano, mesmo com raiva...</p>
+			        	</div>
+						<on-touch>
+							<change-state target="text4"/>
+						</on-touch>
+					</state>
+					<state id="text4">
+						<div left="200" top="100" width="400" font-size="30" font-color="black">
+				        	<p transition="animated fadeIn">Decidiu que para chegar mais rapido ao seu destino deveria correr até a caverna o mais rapido possível,mesmo sabendo que iria chegar ao seu destino exausto e mesmo assim tinha que derrotar Baldur.</p>
+				        </div>
+				        <trigger agent="placa" change-state="mostrar"></trigger>
+					</state>
+				</agent>
+
+				<agent id="placa">
+					<state id="nao_mostrar">
+					</state>
+					<state id="mostrar">
+						<img src="graphics/Seta1.png" left="400" top="300" transition="animated infinite tada">
+						<on-touch>
+							<emit event="next_page"></emit>
+						</on-touch>	
+					</state>
+				</agent>
+			</page>
+			<!--Página 2--Entrada da Caverna-->
+			<page id="2" bg-image="graphics/BG2.png" bg-sound="graphics/01.mp3">
+				
+				<img  src="graphics/char.png" width="300" height="200" left="750" top="400"></img>
+				
+				<!--PARTE DA PEDRA-->!
+
+				<agent id="pedra">
+					<property name="haspedra" value="false">
+					<state id="sumida">
+					</state>
+					<state id="achada">
+						<img transition="animated fadeIn" id="pedraEntrada" src="graphics/pedra.png" draggable left="800" top="305" width="100" height="80">
+						<on-touch>
+							<set target="hasKey" value="true"></set>
+						</on-touch>
+					</state>
+				</agent>
+				
+				<agent id="textoPagina2">
+					<state id="texto1">
+						<div left="300" top="50" font-size="30" width="500" font-color="#AA6BFFFF">
+							<p>Após 2 dias e 2 noites sem parar de correr o grande guerreiro chega até a porta da caverna e para entrar, precisa encontrar a pedra secreta que abre a porta.(Ela está em um dos mini portais).</p>
+						</div>		
+					</state>
+					<state id="texto2">
+						<div left="300" top="30" width="500" font-size="50" font-color="#AA6BFFFF">
+							<p transition="animated jello">Legal!! Você encontrou a pedra!! Arraste-a até a boca da caverna para poder entrar.</p>
+						</div>		
+					</state>
+				</agent>
+
+				<agent id="portal1">
+					<state id="verifica">
+						<img id="um"  src="graphics/portal.png" left="700" top="400" width="100" height="100"/>
+						<on-touch>
+							
+							<change-state target="verificado"/>	
+						</on-touch>
+					</state>
+					<state id="verificado">
+						<trigger agent="pedra" change-state="achada"></trigger>
+						<trigger agent="textoPagina2" change-state="texto2"></trigger>
+						<on-touch>
+							<alert on-start="true">pedra encontrada!</alert>
+							<img id="um" transition="animated tada" src="graphics/portal.png" left="700" top="400" width="100" height="100"/>
+						</on-touch>
+					</state>
+				</agent>
+
+				<agent id="portal2">
+					<state id="verifica">
+						<on-touch>
+							<img id="um" src="graphics/portal.png" left="600" top="400" width="100" height="100"/>
+							<change-state target="verificado">
+						</on-touch>
+					</state>
+					<state id="verificado">
+						<on-touch>
+							
+							<img id="um" src="graphics/portal.png" left="600" top="400" width="100" height="100"/>
+							<alert>não tem nada aqui</alert>
+						</on-touch>
+					</state>
+				</agent>
+				
+				<agent id="door">
+					<state id="fechada">
+						<img id="porta_fechada" src="graphics/porta1.png" left="20" top="200" width="300" height="400"/>
+						<detect target="pedraEntrada" agent="door" change-state="aberta"></detect>
+					</state>
+					<state id="aberta">
+						<on-touch>
+							<img id="porta_fechada" src="graphics/porta2.png" left="20" top="200" width="300" height="400"/>
+							<emit event="next_page"></emit>
+						</on-touch>	
+					</state>
+				</agent>
+			</page>
+			<!--Página 3--Caverna-->
+			<page id="3"  bg-image="graphics/caverna2.png" bg-sound="graphics/09.mp3">
+				
+				<board id="placa1" set-class="classic-board" font-size="20px" left="350" top="20" width="300" font-color="white">
+					Ao entrar na caverna o guerreiro se depara com outras duas entradas. Antes de entrar em uma delas,o guerreiro percebe que nao vai conseguir derrotar o inimigo em seu estado atual. Ele precisa descansar, mas não tem tempo a perder.Então ele tirou do bolso um detector de poções e percebeu que havia um logo a sua esquerda. 
+					
+				</board>
+				<img src="graphics/char.png" width="300" height="200" left="350" top="350"></img>
+				<agent id="porta_esquerda">
+					<state>
+						<on-touch>
+							<img id="porta_esquerda" src="graphics/buraco.png" left="70" top="280" width="80" height="140"/>
+							<emit event="goto_page" number="4"></emit>
+							
+						</on-touch>
+					</state>
+				</agent>
+				<agent id="porta_direita">
+					<state>
+						<on-touch>
+							<img id="porta_esquerda" src="graphics/buraco.png" left="800" top="280" width="80" height="140"/>
+							<emit event="goto_page" number="5"></emit>
+							
+						</on-touch>
+					</state>
+				</agent>
+			</page>
+			<!--Página 4--Entrada Baús-->
+			<page id="4" bg-image="graphics/BGcaverna.png" bg-sound="graphics/14.mp3">
+			<board font-size="25" left="130" top="60" width="200" font-color="white">
+					Olha! Um lugar com 3 baús!Talvez algum destes baús tenha a poção que estou procurando.
+			</board>
+			
+			
+			<img src="graphics/char.png" width="300" height="200" left="600" top="350"/>
+			<!--BAÚ 1-->
+			<agent id="caixa1">
+				<state id="fechada">
+					<on-touch>
+						<img id="caixa" src="graphics/bau.png" left="200" top="470" width="100" height="100">
+						<change-state target="aberta"></change-state>
+					</on-touch>
+				</state>
+				<state id="aberta">
+					<img transition="animated fadeOut" id="caixa" src="graphics/bau.png" left="200" top="470" width="100" height="100">
+				</state>
+			</agent>
+			
+			<agent id="elixir">
+				<property name="antidote" value="false">
+				<state id="perdido">
+				</state>
+				<state id="encontrado">
+					<img src="graphics/stamina.png" left="340" top="470" width="100" height="100"/>
+					<on-touch>
+						<set target="antidote" value="true"></set>
+						<change-state target="guardado"></change-state>
+					</on-touch>
+				</state>
+				<state id="guardado">
+					<img transition="animated fadeOut" src="graphics/stamina.png" left="340" top="470" width="80" height="70"/>
+					<trigger agent="avisoElixir" change-state="elixirEncontrado"></trigger>
+				</state>
+			</agent>
+
+			<agent id="avisoElixir">
+				<state id="elixirPerdido">
+					
+				</state>
+				<state id="elixirEncontrado">
+					<board transition="animated fadeIn" set-class="classic-board" left="400" top="10" font-color="white">
+						Poção encontrada
+					</board>
+				</state>
+			</agent>
+			<!--BAÚ2-->
+			<agent id="caixa2" >
+				<state id="fechada">
+					<on-touch>
+						<img id="caixa" src="graphics/bau.png" left="340" top="470" width="100" height="100">
+						<change-state target="aberta"></change-state>
+					</on-touch>
+				</state>
+				<state id="aberta">
+					<img transition="animated fadeOut" id="caixa" src="graphics/bau.png" left="340" top="470" width="100" height="100">
+					<trigger agent="elixir" change-state="encontrado"></trigger>
+					<on-touch>
+						<change-state target="destruida"></change-state>
+					</on-touch>
+				</state>
+					<state id="destruida">	
+				</state>
+			</agent>
+			<!--BAÚ3-->
+			<agent id="caixa3">
+				<state id="fechada">
+					<on-touch>
+						<img id="caixa" src="graphics/bau.png" left="480" top="470" width="100" height="100">
+						<change-state target="aberta"></change-state>
+					</on-touch>
+				</state>
+				<state id="aberta">
+					<img id="caixa" src="graphics/bau.png" transition="animated fadeOut" left="480" top="470" width="100" height="100">
+				</state>
+			</agent>
+			
+			<agent id="buraco_esquerdo">
+				<state>
+					<on-touch>
+						<img id="buraco_esquerdo" src="graphics/buraco.png" left="830" top="300" width="200" height="300"/>
+						<emit event="goto_page" number="3"></emit>
+					</on-touch>
+				</state>
+			</agent>
+				
+			</page>
+			<!--Página 5--Término do Prólogo-->
+			<page id="5" bg-image="graphics/BGcaverna.png" bg-sound="graphics/04.mp3">
+			<img src="graphics/char2.png" width="200" height="200" left="180" top="320"/>
+			<img src="graphics/filho.png" width="100" height="100" left="700" top="420"/>
+			<agent id="boardInimigo">
+				<state id="antesClick">
+					<board font-size="30" left="200" top="100" width="400" color="white">
+						PARA AJUDAR O NOSSO GUERREIRO CLIQUE NO BALDUR PARA O DERROTA-LO!!
+					</board>
+				</state>
+				<state id="comPoçao">
+					<board font-size="30" left="300" top="50" width="400" color="white">
+						Parabéns você ajudou o guerreiro a derrotar o inimigo e resgatar o seu filho!!Agora eles podem voltar para casa e descansar, pois uma futura aventura os espera.Continua no proximo capítulo...
+					</board>
+				</state>
+				<state id="semPoçao">
+					<board font-size="30" left="300" top="50" width="400" color="white">
+						OH!NÃO! O GUERREIRO ESTAVA CANSADO DEMAIS PARA LUTAR! ELE FOI DERROTADO!!
+
+					</board>
+				</state>
+			</agent>
+			<!--Chances do inimigo ganhar ou perder-->
+			<agent id="inimigo">
+				<state id="parado">
+					<on-touch>
+						<img id="zombie" src="graphics/inimigo.png" left="500" top="300" width="200" height="230"/>
+						<test target="antidote" value="true">
+							<execute action="changeState" target="morto"></execute>
+						</test>
+						<test target="antidote" value="false">
+							<execute action="changeState" target="vivo"></execute>
+						</test>
+					</on-touch> 
+				</state>
+				<!--Inimigo perdendo-->
+				<state id="morto">
+					<trigger agent="boardInimigo" change-state="comPoçao" ></trigger>
+					<animation speed="50" y="350" x="500" repeat="yes" width="200" height="230">
+						<img src="graphics/inimigo2.png"></img>
+						>
+					</animation>
+				</state>
+				<!--Inimigo ganhando-->
+				<state id="vivo">
+					<trigger agent="boardInimigo" change-state="semPoçao"></trigger>
+					<animation speed="10" x="500" y="300" repeat="no" width="200" height="230">
+						<img src="graphics/inimigo.png"></img>
+						
+					</animation>
+				</state>
+			</agent>
+			</page>
+	</fable>
+</body>
+</html>
